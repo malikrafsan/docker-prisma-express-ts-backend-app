@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum VerificationStatus {
+  DRAFT
+  VERIFIED
+  REJECTED
+}
+
+model User {
+  id_user             Int                @id @default(autoincrement())
+  is_admin            Boolean            @default(false)
+  name                String
+  username            String             @unique
+  password            String
+  foto_KTP            String
+  verification_status VerificationStatus @default(DRAFT)
+  saldo               Int                @default(0)
+  req_saldo_change    ReqSaldoChange[]
+  req_transfer        ReqTransfer[]
+}
+
+model ReqSaldoChange {
+  id_req_saldo_change Int                @id @default(autoincrement())
+  id_user             Int
+  user                User               @relation(fields: [id_user], references: [id_user])
+  currency            String
+  amount_source       Int
+  amount_target       Int
+  verification_status VerificationStatus @default(DRAFT)
+}
+
+model ReqTransfer {
+  id_req_transfer     Int                @id @default(autoincrement())
+  id_user             Int
+  user                User               @relation(fields: [id_user], references: [id_user])
+  currency            String
+  amount              Int
+  verification_status VerificationStatus @default(DRAFT)
+}
