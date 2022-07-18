@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `user` MODIFY `fotoKTP` LONGTEXT NOT NULL;

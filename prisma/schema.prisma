@@ -22,7 +22,8 @@ model User {
   name                String
   username            String             @unique
   password            String
-  foto_KTP            String
+  fotoKTP             String             @db.LongText
+  linkKTP             String
   verification_status VerificationStatus @default(DRAFT)
   saldo               Int                @default(0)
   req_saldo_change    ReqSaldoChange[]
