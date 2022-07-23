@@ -5,7 +5,7 @@ import { hasher } from '../src/utils';
 const usersData = [
   {
     name: 'Malik Akbar',
-    username: `malikrafsan-${Math.floor(Math.random() * 100)}`,
+    username: `malikrafsan`,
     password: 'ini-password',
     fotoKTP: 'https://i.pravatar.cc/300',
     linkKTP: '-',

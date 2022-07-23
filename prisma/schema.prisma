@@ -23,11 +23,12 @@ model User {
   username            String             @unique
   password            String
   fotoKTP             String             @db.LongText
-  linkKTP             String
+  linkKTP             String             @db.Text
   verification_status VerificationStatus @default(DRAFT)
   saldo               Int                @default(0)
   req_saldo_change    ReqSaldoChange[]
-  req_transfer        ReqTransfer[]
+  transfer_src        Transfer[]         @relation("transfer_src")
+  transfer_dest       Transfer[]         @relation("transfer_dest")
 }
 
 model ReqSaldoChange {
@@ -40,11 +41,12 @@ model ReqSaldoChange {
   verification_status VerificationStatus @default(DRAFT)
 }
 
-model ReqTransfer {
-  id_req_transfer     Int                @id @default(autoincrement())
-  id_user             Int
-  user                User               @relation(fields: [id_user], references: [id_user])
-  currency            String
-  amount              Int
-  verification_status VerificationStatus @default(DRAFT)
+model Transfer {
+  id_req_transfer Int    @id @default(autoincrement())
+  id_user_src     Int
+  user_src        User   @relation("transfer_src", fields: [id_user_src], references: [id_user])
+  id_user_dest    Int
+  user_dest       User   @relation("transfer_dest", fields: [id_user_dest], references: [id_user])
+  currency        String
+  amount          Int
 }

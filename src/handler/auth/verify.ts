@@ -3,11 +3,6 @@ import prisma from '../../prisma';
 import { VerificationStatus } from '@prisma/client'
 
 const verifyHandler = async (req: Request, res: Response) => {
-  if (!res.locals.user.is_admin) {
-    console.log('User is not admin');
-    return res.status(401).json({ message: "User is not admin" });
-  }
-
   const { username, verified } = req.body;
 
   const user = await prisma.user.findFirst({
