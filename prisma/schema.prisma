@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgres"
   url      = env("DATABASE_URL")
 }
 
@@ -22,7 +22,7 @@ model User {
   name                String
   username            String             @unique
   password            String
-  fotoKTP             String             @db.LongText
+  fotoKTP             String             @db.Text
   linkKTP             String             @db.Text
   verification_status VerificationStatus @default(DRAFT)
   saldo               Int                @default(0)

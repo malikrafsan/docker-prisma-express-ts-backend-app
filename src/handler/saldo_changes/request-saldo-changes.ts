@@ -5,6 +5,11 @@ const requestSaldoChangesHandler = async (req: Request, res: Response) => {
   const { currency, amount_source } = req.body;
   const username = res.locals.user.username;
 
+  if (typeof currency !== "string" || typeof amount_source !== "number") {
+    res.status(400).json({ error: "Invalid request" });
+    return;
+  }
+
   const user = await prisma.user.findFirst({
     where: {
       username: username,

@@ -1,11 +1,18 @@
 import { Request, Response } from 'express';
 import prisma from '../../prisma';
-import { VerificationStatus } from '@prisma/client'
+import { VerificationStatus } from '@prisma/client';
 
 const transferHandler = async (req: Request, res: Response) => {
   const { username_dest, amount, currency } = req.body;
 
   const username_src = res.locals.user.username;
+
+  if (username_src === username_dest) {
+    res
+      .status(400)
+      .json({ message: 'Username is same for source and destination' });
+    return;
+  }
 
   const user_src = await prisma.user.findFirst({
     where: {
@@ -25,7 +32,10 @@ const transferHandler = async (req: Request, res: Response) => {
     });
   }
 
-  if (user_src.verification_status !== VerificationStatus.VERIFIED || user_dest.verification_status !== VerificationStatus.VERIFIED) {
+  if (
+    user_src.verification_status !== VerificationStatus.VERIFIED ||
+    user_dest.verification_status !== VerificationStatus.VERIFIED
+  ) {
     return res.status(401).json({
       message: 'User is not verified',
     });
@@ -55,16 +65,16 @@ const transferHandler = async (req: Request, res: Response) => {
         id_user_dest: user_dest.id_user,
         amount,
         currency,
-      }
-    })
+      },
+    });
 
     return res.status(200).json({
       message: 'Transfer success',
-      transaction
+      transaction,
     });
   }
 
-  return res.status(400).json({ message: "Update failed" });
-}
+  return res.status(400).json({ message: 'Update failed' });
+};
 
 export default transferHandler;

@@ -16,21 +16,21 @@ const transferHistoryHandler = async (_: Request, res: Response) => {
     });
   }
 
-  const transferHistorySrc = await prisma.transfer.findMany({
+  const transfer_history_src = await prisma.transfer.findMany({
     where: {
       id_user_src: user.id_user,
     },
   });
 
-  const transferHistoryDest = await prisma.transfer.findMany({
+  const transfer_history_dest = await prisma.transfer.findMany({
     where: {
       id_user_dest: user.id_user,
     },
   });
 
   return res.status(200).json({
-    transferHistorySrc,
-    transferHistoryDest,
+    transfer_history_src,
+    transfer_history_dest,
   });
 }
 

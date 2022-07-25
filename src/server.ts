@@ -31,7 +31,7 @@ app.use(bodyParser.json());
 app.use(fileUpload());
 
 app.get('/', (_, res) => {
-  res.json('hello there');
+  res.json('hello there111');
 });
 
 app.get('/users', async (_, res) => {
@@ -66,6 +66,21 @@ app.post(
   validateAdmin,
   verifySaldoChangesHandler,
 );
+
+// TODO: DELETE LATER
+
+// import { exchangeRateSrv } from './services';
+
+// app.get('/test-exchange-rates', async (req, res) => {
+//   try {
+//     const convert = await exchangeRateSrv.convert('USD', 4.14);
+//     console.log(convert);
+//     res.status(200).json(convert);
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json(err);
+//   }
+// });
 
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);

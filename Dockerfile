@@ -1,13 +1,17 @@
-FROM node:alpine
+FROM node:14-alpine
 
 # Create app directory
 WORKDIR /usr/src/app
 
 COPY package*.json ./
 
+RUN rm -rf node_modules
 RUN npm install
+# RUN npm i -g prisma
 COPY . .
 EXPOSE 5000
 
-RUN npx prisma generate
-CMD [ "npm", "run", "dev" ]
+CMD [ "./startup.sh" ]
+
+# RUN npx prisma migrate dev --name init --preview-feature
+# CMD [ "startup.sh" ]
