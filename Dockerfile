@@ -7,6 +7,7 @@ COPY package*.json ./
 
 RUN rm -rf node_modules
 RUN npm install
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 # RUN npm i -g prisma
 COPY . .
 EXPOSE 5000
