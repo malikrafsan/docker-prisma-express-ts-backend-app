@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --config nodemon.json src/server.ts",
-    "start": "npm run tsc && node dist/src/server",
-    "tsc": "tsc"
+    "start": "node dist/src/server",
+    "tsc": "tsc",
+    "postinstall": "npm run tsc"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
