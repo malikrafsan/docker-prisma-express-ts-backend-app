@@ -4,14 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --config nodemon.json src/server.ts"
+    "dev": "nodemon --config nodemon.json src/server.ts",
+    "start": "tsc && node dist/src/server"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
   },
-  "keywords": [],
+  "keywords": [
+    "heroku"
+  ],
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": "14.x"
+  },
   "dependencies": {
     "@prisma/client": "^4.0.0",
     "atob": "^2.1.2",
@@ -27,6 +33,7 @@
     "node-blob": "0.0.2"
   },
   "devDependencies": {
+    "@faker-js/faker": "^7.3.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",

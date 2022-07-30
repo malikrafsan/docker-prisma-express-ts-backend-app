@@ -15,14 +15,15 @@ import {
   transferHistoryHandler,
   saldoChangesHistoryHandler,
   requestSaldoChangesHandler,
-  verifySaldoChangesHandler,
+  modifySaldoChangesHandler,
   getAllDraftRequests,
   verifyRequestsHandler,
+  exchangeRateSymbolsHandler,
 } from './handler';
 import { validateJWT, validateAdmin } from './middlewares';
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ limit: '25mb' }));
@@ -60,12 +61,14 @@ app.get(
   getAllDraftRequests,
 );
 app.post('/saldo-changes', validateJWT, requestSaldoChangesHandler);
-app.post(
-  '/saldo-changes/:id/verify',
+app.put(
+  '/saldo-changes/:id',
   validateJWT,
   validateAdmin,
-  verifySaldoChangesHandler,
+  modifySaldoChangesHandler,
 );
+
+app.get('/data/exchange-rates-symbols', exchangeRateSymbolsHandler);
 
 // TODO: DELETE LATER
 

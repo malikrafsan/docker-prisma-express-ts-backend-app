@@ -8,8 +8,10 @@ import transferHistoryHandler from './transfer/transfer-history';
 
 import saldoChangesHistoryHandler from './saldo_changes/saldo-changes-history';
 import requestSaldoChangesHandler from './saldo_changes/request-saldo-changes';
-import verifySaldoChangesHandler from './saldo_changes/verify-saldo-changes';
+import modifySaldoChangesHandler from './saldo_changes/verify-saldo-changes';
 import getAllDraftRequests from './saldo_changes/get-all-draft-request';
+
+import exchangeRateSymbolsHandler from './data/exchange-rates-symbols';
 
 export {
   loginHandler,
@@ -20,6 +22,7 @@ export {
   transferHistoryHandler,
   saldoChangesHistoryHandler,
   requestSaldoChangesHandler,
-  verifySaldoChangesHandler,
+  modifySaldoChangesHandler,
   getAllDraftRequests,
-}
+  exchangeRateSymbolsHandler,
+};

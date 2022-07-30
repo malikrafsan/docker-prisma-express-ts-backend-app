@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
 import prisma from '../../prisma';
 import { VerificationStatus } from '@prisma/client';
+import { exchangeRateSrv } from '../../services';
+import { validCurrency } from '../../utils';
+import { exchangeRatesSymbolsType } from '../../data';
 
 const transferHandler = async (req: Request, res: Response) => {
   const { username_dest, amount, currency } = req.body;
@@ -8,9 +11,14 @@ const transferHandler = async (req: Request, res: Response) => {
   const username_src = res.locals.user.username;
 
   if (username_src === username_dest) {
-    res
-      .status(400)
-      .json({ message: 'Username is same for source and destination' });
+    res.status(400).json({
+      message: 'Username is same for source and destination',
+    });
+    return;
+  }
+
+  if (!validCurrency(currency)) {
+    res.status(400).json({ message: 'Invalid currency' });
     return;
   }
 
@@ -41,12 +49,24 @@ const transferHandler = async (req: Request, res: Response) => {
     });
   }
 
+  const exchangeRes = await exchangeRateSrv.convert(
+    currency as exchangeRatesSymbolsType,
+    amount,
+  );
+  const convertedAmount = exchangeRes.data.result;
+
+  if (user_src.saldo < convertedAmount) {
+    return res.status(400).json({
+      message: 'Not enough saldo',
+    });
+  }
+
   const updatedUserSrc = await prisma.user.update({
     where: {
       username: username_src,
     },
     data: {
-      saldo: user_src.saldo - amount,
+      saldo: user_src.saldo - convertedAmount,
     },
   });
   const updatedUserDest = await prisma.user.update({
@@ -54,7 +74,7 @@ const transferHandler = async (req: Request, res: Response) => {
       username: username_dest,
     },
     data: {
-      saldo: user_dest.saldo + amount,
+      saldo: user_dest.saldo + convertedAmount,
     },
   });
 
@@ -63,7 +83,7 @@ const transferHandler = async (req: Request, res: Response) => {
       data: {
         id_user_src: user_src.id_user,
         id_user_dest: user_dest.id_user,
-        amount,
+        amount: convertedAmount,
         currency,
       },
     });

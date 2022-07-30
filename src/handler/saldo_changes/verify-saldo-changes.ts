@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import prisma from '../../prisma';
 import { VerificationStatus } from '@prisma/client'
 
-const verifySaldoChangesHandler = async (req: Request, res: Response) => {
+const modifySaldoChangesHandler = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { verified } = req.body;
   const username = res.locals.user.username;
@@ -46,7 +46,7 @@ const verifySaldoChangesHandler = async (req: Request, res: Response) => {
         id_user: user.id_user,
       },
       data: {
-        saldo: user.saldo + reqSaldoChange.amount_source,
+        saldo: user.saldo + reqSaldoChange.amount,
       },
     });
 
@@ -61,4 +61,4 @@ const verifySaldoChangesHandler = async (req: Request, res: Response) => {
   });
 }
 
-export default verifySaldoChangesHandler;
+export default modifySaldoChangesHandler;
