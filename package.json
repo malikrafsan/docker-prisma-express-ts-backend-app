@@ -7,7 +7,7 @@
     "dev": "nodemon --config nodemon.json src/server.ts",
     "start": "node dist/src/server",
     "tsc": "tsc",
-    "postinstall": "npm run tsc"
+    "postinstall": "npm run tsc && npx prisma db reset --force"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
