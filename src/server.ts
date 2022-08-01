@@ -32,7 +32,7 @@ app.use(bodyParser.json());
 app.use(fileUpload());
 
 app.get('/', (_, res) => {
-  res.json('hello there111');
+  res.json('hello there');
 });
 
 app.get('/users', async (_, res) => {
@@ -61,7 +61,7 @@ app.get(
   getAllDraftRequests,
 );
 app.post('/saldo-changes', validateJWT, requestSaldoChangesHandler);
-app.put(
+app.patch(
   '/saldo-changes/:id',
   validateJWT,
   validateAdmin,

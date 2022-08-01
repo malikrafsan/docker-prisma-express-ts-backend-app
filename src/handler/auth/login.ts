@@ -3,7 +3,7 @@ import prisma from '../../prisma';
 import bcryptjs from 'bcryptjs';
 import { VerificationStatus } from '@prisma/client'
 import jwt from 'jsonwebtoken';
-import { accessTokenSecret } from '../../config';
+import { accessTokenSecret } from '../../configs';
 
 const loginHandler = async (req: Request, res: Response) => {
   const { username, password } = req.body;

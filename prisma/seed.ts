@@ -18,7 +18,8 @@ const adminData = [
     username: 'malikrafsan',
     password: 'ini-password',
     fotoKTP: '',
-    linkKTP: '',
+    linkKTP:
+      'https://firebasestorage.googleapis.com/v0/b/labpro-selection.appspot.com/o/files%2FMalik%20Akbar%20Hashemi%20Rafsanjani-0.08724032585486197?alt=media&token=dafa4095-b718-4aa4-9f78-2bc0613bcee8',
     is_admin: true,
     verification_status: VerificationStatus.VERIFIED,
   },
@@ -27,7 +28,8 @@ const adminData = [
     username: 'crossline',
     password: 'cross-password',
     fotoKTP: '',
-    linkKTP: '',
+    linkKTP:
+      'https://firebasestorage.googleapis.com/v0/b/labpro-selection.appspot.com/o/files%2FMalik%20Akbar%20Hashemi%20Rafsanjani-0.08724032585486197?alt=media&token=dafa4095-b718-4aa4-9f78-2bc0613bcee8',
     is_admin: true,
     verification_status: VerificationStatus.VERIFIED,
   },
@@ -53,13 +55,14 @@ const userData = Array(SIZE_GENERATED_USERS)
       verification_status === VerificationStatus.VERIFIED
         ? Math.floor(Math.random() * 100000)
         : 0;
-    
+
     return {
       name,
       username: faker.internet.userName(name),
       password: 'password',
-      fotoKTP: '',
-      linkKTP: '',
+      fotoKTP: '-',
+      linkKTP:
+        'https://firebasestorage.googleapis.com/v0/b/labpro-selection.appspot.com/o/files%2FMalik%20Akbar%20Hashemi%20Rafsanjani-0.08724032585486197?alt=media&token=dafa4095-b718-4aa4-9f78-2bc0613bcee8',
       is_admin: false,
       verification_status,
       saldo,
@@ -109,7 +112,11 @@ const main = async () => {
         )
           .fill(null)
           .map(async (_) => {
-            const amount = Math.floor((Math.random() - 0.5) * 100000);
+            const amount = Math.floor(
+              (Math.random() - 0.5) *
+                (user.saldo /
+                  MAX_SIZE_GENERATED_SALDO_CHANGES_PER_USER),
+            );
             const currency =
               currencies[
                 Math.floor(Math.random() * currencies.length)

@@ -7,6 +7,9 @@ const getAllDraftRequests = async (_: Request, res: Response) => {
     where: {
       verification_status: VerificationStatus.DRAFT,
     },
+    include: {
+      user: true,
+    }
   });
 
   return res.status(200).json(allRequest);
