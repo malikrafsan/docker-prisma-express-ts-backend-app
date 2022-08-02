@@ -3,6 +3,8 @@ import registerHandler from './auth/register';
 import verifyHandler from './auth/verify';
 import verifyRequestsHandler from './auth/verify-requests';
 
+import getProfileHandler from './user/profile';
+
 import transferHandler from './transfer/transfer';
 import transferHistoryHandler from './transfer/transfer-history';
 
@@ -25,4 +27,5 @@ export {
   modifySaldoChangesHandler,
   getAllDraftRequests,
   exchangeRateSymbolsHandler,
+  getProfileHandler,
 };

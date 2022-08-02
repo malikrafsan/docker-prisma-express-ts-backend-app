@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import prisma from '../../prisma';
 
-const profileHandler = async (_: Request, res: Response) => {
+const getProfileHandler = async (_: Request, res: Response) => {
   const username = res.locals.user.username;
 
   const user = await prisma.user.findFirst({
@@ -19,4 +19,4 @@ const profileHandler = async (_: Request, res: Response) => {
   return res.status(200).json(user);
 }
 
-export default profileHandler;
+export default getProfileHandler;

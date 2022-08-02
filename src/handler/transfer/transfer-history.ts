@@ -20,11 +20,19 @@ const transferHistoryHandler = async (_: Request, res: Response) => {
     where: {
       id_user_src: user.id_user,
     },
+    include: {
+      user_src: true,
+      user_dest: true,
+    },
   });
 
   const transfer_history_dest = await prisma.transfer.findMany({
     where: {
       id_user_dest: user.id_user,
+    },
+    include: {
+      user_src: true,
+      user_dest: true,
     },
   });
 
@@ -32,6 +40,6 @@ const transferHistoryHandler = async (_: Request, res: Response) => {
     transfer_history_src,
     transfer_history_dest,
   });
-}
+};
 
 export default transferHistoryHandler;

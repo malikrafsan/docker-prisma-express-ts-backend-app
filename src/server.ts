@@ -19,8 +19,13 @@ import {
   getAllDraftRequests,
   verifyRequestsHandler,
   exchangeRateSymbolsHandler,
+  getProfileHandler,
 } from './handler';
-import { validateJWT, validateAdmin } from './middlewares';
+import {
+  validateJWT,
+  validateAdmin,
+  validateCustomer,
+} from './middlewares';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -44,23 +49,40 @@ app.get('/users', async (_, res) => {
   }
 });
 
+app.get('/user', validateJWT, getProfileHandler);
+
 app.post('/login', loginHandler);
 app.post('/register', registerHandler);
 
 app.get('/verify', validateJWT, validateAdmin, verifyRequestsHandler);
 app.post('/verify', validateJWT, validateAdmin, verifyHandler);
 
-app.post('/transfer', validateJWT, transferHandler);
-app.get('/transfer', validateJWT, transferHistoryHandler);
+app.post('/transfer', validateJWT, validateCustomer, transferHandler);
+app.get(
+  '/transfer',
+  validateJWT,
+  validateCustomer,
+  transferHistoryHandler,
+);
 
-app.get('/saldo-changes', validateJWT, saldoChangesHistoryHandler);
+app.get(
+  '/saldo-changes',
+  validateJWT,
+  validateCustomer,
+  saldoChangesHistoryHandler,
+);
 app.get(
   '/saldo-changes/requests',
   validateJWT,
   validateAdmin,
   getAllDraftRequests,
 );
-app.post('/saldo-changes', validateJWT, requestSaldoChangesHandler);
+app.post(
+  '/saldo-changes',
+  validateJWT,
+  validateCustomer,
+  requestSaldoChangesHandler,
+);
 app.patch(
   '/saldo-changes/:id',
   validateJWT,
@@ -69,21 +91,6 @@ app.patch(
 );
 
 app.get('/data/exchange-rates-symbols', exchangeRateSymbolsHandler);
-
-// TODO: DELETE LATER
-
-// import { exchangeRateSrv } from './services';
-
-// app.get('/test-exchange-rates', async (req, res) => {
-//   try {
-//     const convert = await exchangeRateSrv.convert('USD', 4.14);
-//     console.log(convert);
-//     res.status(200).json(convert);
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).json(err);
-//   }
-// });
 
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);

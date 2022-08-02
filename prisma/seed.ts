@@ -8,7 +8,7 @@ import {
 } from '../src/data';
 import { exchangeRateSrv } from '../src/services';
 
-const SIZE_GENERATED_USERS = 10;
+const SIZE_GENERATED_USERS = 20;
 const MAX_SIZE_GENERATED_TRANSFER_PER_USER = 100;
 const MAX_SIZE_GENERATED_SALDO_CHANGES_PER_USER = 100;
 
