@@ -1,4 +1,8 @@
-import { PrismaClient, VerificationStatus } from '@prisma/client';
+import {
+  Prisma,
+  PrismaClient,
+  VerificationStatus,
+} from '@prisma/client';
 import { faker } from '@faker-js/faker';
 const prisma = new PrismaClient();
 import { hasher } from '../src/utils';
@@ -180,6 +184,7 @@ const main = async () => {
       );
     })
     .map((user) => user.id_user);
+
   await Promise.all(
     updatedUsers.map(async (user) => {
       if (user.verification_status !== VerificationStatus.VERIFIED) {
@@ -190,49 +195,71 @@ const main = async () => {
         return;
       }
 
-      const res = await Promise.all(
-        Array(
-          Math.floor(
-            Math.random() * MAX_SIZE_GENERATED_TRANSFER_PER_USER,
-          ),
-        )
-          .fill(null)
-          .map(async (_) => {
-            const amount = Math.floor(
-              (Math.random() * user.saldo) /
-                MAX_SIZE_GENERATED_TRANSFER_PER_USER,
-            );
-            const currency =
-              currencies[
-                Math.floor(Math.random() * currencies.length)
-              ];
+      const res = [];
+      for (const _ of Array(
+        Math.floor(
+          Math.random() * MAX_SIZE_GENERATED_TRANSFER_PER_USER,
+        ),
+      )) {
+        const amount = Math.floor(
+          (Math.random() * user.saldo) /
+            MAX_SIZE_GENERATED_TRANSFER_PER_USER,
+        );
+        const currency =
+          currencies[Math.floor(Math.random() * currencies.length)];
 
-            const exchangeRes = await exchangeRateSrv.convert(
-              currency as exchangeRatesSymbolsType,
-              amount,
-            );
-            const convertedAmount: number = exchangeRes.data.result;
+        const exchangeRes = await exchangeRateSrv.convert(
+          currency as exchangeRatesSymbolsType,
+          amount,
+        );
+        const convertedAmount: number = exchangeRes.data.result;
 
-            const id_user_dest = randomize(
-              idUsersVerified,
-              user.id_user,
-            );
-            const transfer = await prisma.transfer.create({
-              data: {
-                id_user_src: user.id_user,
-                id_user_dest,
-                currency,
-                amount: convertedAmount,
+        const id_user_dest = randomize(idUsersVerified, user.id_user);
+        const userDest = await prisma.user.findFirst({
+          where: {
+            id_user: id_user_dest,
+          },
+        });
+
+        if (!userDest) {
+          return null;
+        }
+
+        const transfer = await prisma.transfer.create({
+          data: {
+            id_user_src: user.id_user,
+            id_user_dest,
+            currency,
+            amount: convertedAmount,
+          },
+        });
+
+        const [updatedUserSrc, updatedUserDest] =
+          await prisma.$transaction([
+            prisma.user.update({
+              where: {
+                id_user: transfer.id_user_src,
               },
-            });
+              data: {
+                saldo: user.saldo - convertedAmount,
+              },
+            }),
+            prisma.user.update({
+              where: {
+                id_user: transfer.id_user_dest,
+              },
+              data: {
+                saldo: userDest.saldo + convertedAmount,
+              },
+            }),
+          ]);
 
-            console.log(
-              `Created transfer with id: ${transfer.id_transfer}`,
-            );
+        console.log(
+          `Created transfer with id: ${transfer.id_transfer} and update saldo user ${updatedUserSrc.id_user} and ${updatedUserDest.id_user}`,
+        );
 
-            return transfer;
-          }),
-      );
+        res.push(transfer);
+      }
 
       return res;
     }),
