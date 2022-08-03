@@ -1,17 +1,12 @@
-import {
-  PrismaClient,
-  VerificationStatus,
-} from '@prisma/client';
+import { PrismaClient, VerificationStatus } from '@prisma/client';
 import { faker } from '@faker-js/faker';
 const prisma = new PrismaClient();
 import { hasher } from '../src/utils';
-import {
-  exchangeRatesSymbols,
-} from '../src/data';
+import { exchangeRatesSymbols } from '../src/data';
 
-const SIZE_GENERATED_USERS = 10;
-const MAX_SIZE_GENERATED_TRANSFER_PER_USER = 50;
-const MAX_SIZE_GENERATED_SALDO_CHANGES_PER_USER = 50;
+const SIZE_GENERATED_USERS = 6;
+const MAX_SIZE_GENERATED_TRANSFER_PER_USER = 20;
+const MAX_SIZE_GENERATED_SALDO_CHANGES_PER_USER = 20;
 
 const adminData = [
   {
@@ -23,7 +18,7 @@ const adminData = [
       'https://firebasestorage.googleapis.com/v0/b/labpro-selection.appspot.com/o/files%2FGuesthouse-vila-dago-cisitu-djuanda-tubagus-ismail-cimbuluit-sangkuriang-resort-asri-cigadung-cikutr-Bandung-Indonesia.jpg?alt=media&token=96d0a604-3a34-40fa-8a51-91c6c9f24eae',
     is_admin: true,
     verification_status: VerificationStatus.VERIFIED,
-  }
+  },
 ];
 
 const randomVerificationStatus = (bound1: number, bound2: number) => {
@@ -214,6 +209,10 @@ const main = async () => {
             amount: convertedAmount,
           },
         });
+
+        console.log(
+          `id user src ${user.id_user}, id user dest ${userDest.id_user}`,
+        );
 
         const [updatedUserSrc, updatedUserDest] =
           await prisma.$transaction([
