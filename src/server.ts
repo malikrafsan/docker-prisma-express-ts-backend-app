@@ -20,6 +20,7 @@ import { handlerWrapperError } from './utils';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const dateRunning = new Date();
 
 app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ limit: '25mb' }));
@@ -28,16 +29,7 @@ app.use(bodyParser.json());
 app.use(fileUpload());
 
 app.get('/', (_, res) => {
-  res.json('Server is running');
-});
-
-app.get('/users', async (_, res) => {
-  try {
-    const users = await prisma.user.findMany();
-    res.json(users);
-  } catch (err) {
-    console.log(err);
-  }
+  res.json(`Server is running from ${dateRunning.toLocaleString()}`);
 });
 
 app.get(
