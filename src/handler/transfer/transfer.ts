@@ -59,40 +59,44 @@ const createTransferHandler = async (req: Request, res: Response) => {
     });
   }
 
-  const updatedUserSrc = await prisma.user.update({
-    where: {
-      username: username_src,
-    },
-    data: {
-      saldo: user_src.saldo - convertedAmount,
-    },
-  });
-  const updatedUserDest = await prisma.user.update({
-    where: {
-      username: username_dest,
-    },
-    data: {
-      saldo: user_dest.saldo + convertedAmount,
-    },
-  });
+  const [updatedUserSrc, updatedUserDest] = await prisma.$transaction(
+    [
+      prisma.user.update({
+        where: {
+          username: username_src,
+        },
+        data: {
+          saldo: user_src.saldo - convertedAmount,
+        },
+      }),
+      prisma.user.update({
+        where: {
+          username: username_dest,
+        },
+        data: {
+          saldo: user_dest.saldo + convertedAmount,
+        },
+      }),
+    ],
+  );
 
-  if (updatedUserSrc && updatedUserDest) {
-    const transaction = await prisma.transfer.create({
-      data: {
-        id_user_src: user_src.id_user,
-        id_user_dest: user_dest.id_user,
-        amount: convertedAmount,
-        currency,
-      },
-    });
-
-    return res.status(200).json({
-      message: 'Transfer success',
-      transaction,
-    });
+  if (!updatedUserSrc || !updatedUserDest) {
+    return res.status(400).json({ message: 'Update failed' });
   }
 
-  return res.status(400).json({ message: 'Update failed' });
+  const transaction = await prisma.transfer.create({
+    data: {
+      id_user_src: user_src.id_user,
+      id_user_dest: user_dest.id_user,
+      amount: convertedAmount,
+      currency,
+    },
+  });
+
+  return res.status(200).json({
+    message: 'Transfer success',
+    transaction,
+  });
 };
 
 export default createTransferHandler;
