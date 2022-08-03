@@ -6,7 +6,6 @@ const validateAdmin = (
   next: NextFunction,
 ) => {
   if (!res.locals.user.is_admin) {
-    console.log('User is not admin');
     return res.status(401).json({ message: 'User is not admin' });
   }
 

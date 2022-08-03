@@ -15,15 +15,6 @@ class ExchangeRateSrv {
   constructor() {}
 
   async convert(from: exchangeRatesSymbolsType, amount: number) {
-    // DELETE LATER
-    console.log('convert');
-    return {
-      data: {
-        result: amount * 2,
-      },
-      err: null,
-    };
-
     if (this.getCache(from)) {
       console.log('HIT CACHE');
       const result = this.getCache(from) * amount;
