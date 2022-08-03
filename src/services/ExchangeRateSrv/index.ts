@@ -6,10 +6,8 @@ import { exchangeRatesSymbolsType } from '../../data';
 class ExchangeRateSrv {
   private readonly API_URL =
     'https://api.apilayer.com/exchangerates_data';
-  private readonly API_KEY = '0aLK13jw0zp0hjE0wZ9rJSzvxDKpcIzA';
+  private readonly API_KEY = process.env.API_KEY_EXCHANGE_RATE || '-';
 
-  // 1 month in ms
-  // private readonly DEFAULT_CACHE_TIME = 1000 * 60 * 60 * 24 * 30;
   private readonly DEFAULT_TO_CURRENCY = 'IDR';
 
   constructor() {}
