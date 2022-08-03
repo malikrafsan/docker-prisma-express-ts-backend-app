@@ -31,6 +31,7 @@ app.get('/', (_, res) => {
   res.json(`Server is running from ${dateRunning.toLocaleString()}`);
 });
 
+app.get('/users', validateJWT, validateAdmin, userHandler.findAllUserHandler);
 app.get(
   '/user',
   validateJWT,

@@ -14,6 +14,7 @@ export interface IAuthHandler {
 
 export interface IUserHandler {
   getProfileHandler: handlerType;
+  findAllUserHandler: handlerType;
 }
 
 export interface ITransferHandler {
