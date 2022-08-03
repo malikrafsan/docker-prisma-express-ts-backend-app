@@ -4,9 +4,6 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import fileUpload from 'express-fileupload';
 
-global.atob = require('atob');
-global.Blob = require('node-blob');
-
 import {
   authHandler,
   userHandler,
