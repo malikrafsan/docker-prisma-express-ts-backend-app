@@ -1,5 +1,3 @@
-import { Request, Response } from 'express';
-
 import loginHandler from './login';
 import registerHandler from './register';
 import verifyHandler from './verify';
