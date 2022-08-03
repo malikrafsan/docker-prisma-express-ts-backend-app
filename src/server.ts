@@ -8,24 +8,18 @@ global.atob = require('atob');
 global.Blob = require('node-blob');
 
 import {
-  loginHandler,
-  registerHandler,
-  verifyHandler,
+  authHandler,
+  userHandler,
   transferHandler,
-  transferHistoryHandler,
-  saldoChangesHistoryHandler,
-  requestSaldoChangesHandler,
-  modifySaldoChangesHandler,
-  getAllDraftRequests,
-  verifyRequestsHandler,
-  exchangeRateSymbolsHandler,
-  getProfileHandler,
+  saldoChangesHandler,
+  dataHandler,
 } from './handler';
 import {
   validateJWT,
   validateAdmin,
   validateCustomer,
 } from './middlewares';
+import { handlerWrapperError } from './utils';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -49,48 +43,73 @@ app.get('/users', async (_, res) => {
   }
 });
 
-app.get('/user', validateJWT, getProfileHandler);
+app.get(
+  '/user',
+  validateJWT,
+  handlerWrapperError(userHandler.getProfileHandler),
+);
 
-app.post('/login', loginHandler);
-app.post('/register', registerHandler);
+app.post('/login', handlerWrapperError(authHandler.loginHandler));
+app.post(
+  '/register',
+  handlerWrapperError(authHandler.registerHandler),
+);
 
-app.get('/verify', validateJWT, validateAdmin, verifyRequestsHandler);
-app.post('/verify', validateJWT, validateAdmin, verifyHandler);
+app.get(
+  '/verify',
+  validateJWT,
+  validateAdmin,
+  handlerWrapperError(authHandler.verifyRequestsHandler),
+);
+app.post(
+  '/verify',
+  validateJWT,
+  validateAdmin,
+  handlerWrapperError(authHandler.verifyHandler),
+);
 
-app.post('/transfer', validateJWT, validateCustomer, transferHandler);
+app.post(
+  '/transfer',
+  validateJWT,
+  validateCustomer,
+  handlerWrapperError(transferHandler.createTransferHandler),
+);
 app.get(
   '/transfer',
   validateJWT,
   validateCustomer,
-  transferHistoryHandler,
+  handlerWrapperError(transferHandler.transferHistoryHandler),
 );
 
 app.get(
   '/saldo-changes',
   validateJWT,
   validateCustomer,
-  saldoChangesHistoryHandler,
+  handlerWrapperError(saldoChangesHandler.saldoChangesHistoryHandler),
 );
 app.get(
   '/saldo-changes/requests',
   validateJWT,
   validateAdmin,
-  getAllDraftRequests,
+  handlerWrapperError(saldoChangesHandler.getAllDraftRequests),
 );
 app.post(
   '/saldo-changes',
   validateJWT,
   validateCustomer,
-  requestSaldoChangesHandler,
+  handlerWrapperError(saldoChangesHandler.requestSaldoChangesHandler),
 );
 app.patch(
   '/saldo-changes/:id',
   validateJWT,
   validateAdmin,
-  modifySaldoChangesHandler,
+  handlerWrapperError(saldoChangesHandler.modifySaldoChangesHandler),
 );
 
-app.get('/data/exchange-rates-symbols', exchangeRateSymbolsHandler);
+app.get(
+  '/data/exchange-rates-symbols',
+  handlerWrapperError(dataHandler.exchangeRateSymbolsHandler),
+);
 
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);

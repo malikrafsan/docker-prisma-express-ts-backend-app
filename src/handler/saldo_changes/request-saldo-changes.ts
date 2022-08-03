@@ -16,13 +16,11 @@ const requestSaldoChangesHandler = async (
     typeof currency !== 'string' ||
     typeof amount_source !== 'number'
   ) {
-    res.status(400).json({ message: 'Invalid request' });
-    return;
+    return res.status(400).json({ message: 'Invalid request' });
   }
 
   if (!validCurrency(currency)) {
-    res.status(400).json({ message: 'Invalid currency' });
-    return;
+    return res.status(400).json({ message: 'Invalid currency' });
   }
 
   const user = await prisma.user.findFirst({

@@ -5,21 +5,19 @@ import { exchangeRateSrv } from '../../services';
 import { validCurrency } from '../../utils';
 import { exchangeRatesSymbolsType } from '../../data';
 
-const transferHandler = async (req: Request, res: Response) => {
+const createTransferHandler = async (req: Request, res: Response) => {
   const { username_dest, amount, currency } = req.body;
 
   const username_src = res.locals.user.username;
 
   if (username_src === username_dest) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'Username is same for source and destination',
     });
-    return;
   }
 
   if (!validCurrency(currency)) {
-    res.status(400).json({ message: 'Invalid currency' });
-    return;
+    return res.status(400).json({ message: 'Invalid currency' });
   }
 
   const user_src = await prisma.user.findFirst({
@@ -97,4 +95,4 @@ const transferHandler = async (req: Request, res: Response) => {
   return res.status(400).json({ message: 'Update failed' });
 };
 
-export default transferHandler;
+export default createTransferHandler;
