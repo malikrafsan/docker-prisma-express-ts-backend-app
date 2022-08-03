@@ -30,22 +30,26 @@ class ExchangeRateSrv {
 
     const url = `${this.API_URL}/convert?to=${this.DEFAULT_TO_CURRENCY}&from=${from}&amount=${amount}`;
 
-    const res = await axios.get(url, {
-      headers: {
-        apikey: this.API_KEY,
-      },
-      responseType: 'text',
-    });
+    try {
+      const res = await axios.get(url, {
+        headers: {
+          apikey: this.API_KEY,
+        },
+        responseType: 'text',
+      });
 
-    const data = res.data;
-    this.putCache(from, data.info.rate);
+      const data = res.data;
+      this.putCache(from, data.info.rate);
 
-    return {
-      data: {
-        result: Math.floor(data.result),
-      },
-      err: null,
-    };
+      return {
+        data: {
+          result: Math.floor(data.result),
+        },
+        err: null,
+      };
+    } catch (err) {
+      return { data: null, err };
+    }
   }
 
   private putCache(key: any, value: unknown) {

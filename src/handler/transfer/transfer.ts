@@ -51,6 +51,11 @@ const createTransferHandler = async (req: Request, res: Response) => {
     currency as exchangeRatesSymbolsType,
     amount,
   );
+  
+  if (exchangeRes.err || !exchangeRes.data) {
+    return res.status(500).json({ message: 'Internal server error' });
+  } 
+
   const convertedAmount = exchangeRes.data.result;
 
   if (user_src.saldo < convertedAmount) {

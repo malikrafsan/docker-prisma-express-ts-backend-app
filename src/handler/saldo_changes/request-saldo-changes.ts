@@ -45,6 +45,11 @@ const requestSaldoChangesHandler = async (
     currency as exchangeRatesSymbolsType,
     amount_source,
   );
+
+  if (exchangeRes.err || !exchangeRes.data) {
+    return res.status(500).json({ message: 'Internal server error' });
+  } 
+
   const amount = exchangeRes.data.result;
 
   if (user.saldo + amount < 0) {
