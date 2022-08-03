@@ -8,19 +8,6 @@ const modifySaldoChangesHandler = async (
 ) => {
   const { id } = req.params;
   const { verified } = req.body;
-  const username = res.locals.user.username;
-
-  const user = await prisma.user.findFirst({
-    where: {
-      username,
-    },
-  });
-
-  if (!user) {
-    return res.status(401).json({
-      message: 'User does not exist',
-    });
-  }
 
   const reqSaldoChange = await prisma.reqSaldoChange.findFirst({
     where: {
@@ -31,6 +18,18 @@ const modifySaldoChangesHandler = async (
   if (!reqSaldoChange) {
     return res.status(401).json({
       message: 'Request saldo changes does not exist',
+    });
+  }
+
+  const user = await prisma.user.findFirst({
+    where: {
+      id_user: reqSaldoChange.id_user,
+    },
+  });
+
+  if (!user) {
+    return res.status(401).json({
+      message: 'User does not exist',
     });
   }
 
