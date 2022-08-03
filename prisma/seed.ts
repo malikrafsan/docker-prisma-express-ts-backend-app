@@ -214,25 +214,23 @@ const main = async () => {
           `id user src ${user.id_user}, id user dest ${userDest.id_user}`,
         );
 
-        const [updatedUserSrc, updatedUserDest] =
-          await prisma.$transaction([
-            prisma.user.update({
-              where: {
-                id_user: transfer.id_user_src,
-              },
-              data: {
-                saldo: user.saldo - convertedAmount,
-              },
-            }),
-            prisma.user.update({
-              where: {
-                id_user: transfer.id_user_dest,
-              },
-              data: {
-                saldo: userDest.saldo + convertedAmount,
-              },
-            }),
-          ]);
+        const updatedUserSrc = await prisma.user.update({
+          where: {
+            id_user: transfer.id_user_src,
+          },
+          data: {
+            saldo: user.saldo - convertedAmount,
+          },
+        });
+
+        const updatedUserDest = await prisma.user.update({
+          where: {
+            id_user: transfer.id_user_dest,
+          },
+          data: {
+            saldo: userDest.saldo + convertedAmount,
+          },
+        });
 
         console.log(
           `Created transfer with id: ${transfer.id_transfer} and update saldo user ${updatedUserSrc.id_user} and ${updatedUserDest.id_user}`,
