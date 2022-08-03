@@ -4,7 +4,8 @@ import { hasher } from '../../utils';
 
 const registerHandler = async (req: Request, res: Response) => {
   try {
-    const { name, username, password, fotoKTP, urlFotoKTP } = req.body;
+    const { name, username, password, fotoKTP, urlFotoKTP } =
+      req.body;
 
     if (!name || !username || !password || !fotoKTP || !urlFotoKTP) {
       return res.status(400).json({ message: 'Bad Request' });
@@ -12,12 +13,14 @@ const registerHandler = async (req: Request, res: Response) => {
 
     const user = await prisma.user.findFirst({
       where: {
-        username
+        username,
       },
     });
 
     if (user) {
-      return res.status(400).json({ message: 'Username is already registered' });
+      return res
+        .status(400)
+        .json({ message: 'Username is already registered' });
     }
 
     const hashedPassword = await hasher(password);
@@ -33,10 +36,9 @@ const registerHandler = async (req: Request, res: Response) => {
     });
 
     return res.json(newUser);
-  }
-  catch (err) {
+  } catch (err) {
     return res.status(500).json({ message: 'Internal Server Error' });
   }
-}
+};
 
 export default registerHandler;

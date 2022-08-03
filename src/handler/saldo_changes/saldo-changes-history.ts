@@ -1,7 +1,10 @@
 import { Request, Response } from 'express';
 import prisma from '../../prisma';
 
-const saldoChangesHistoryHandler = async (_: Request, res: Response) => {
+const saldoChangesHistoryHandler = async (
+  _: Request,
+  res: Response,
+) => {
   const username = res.locals.user.username;
 
   const user = await prisma.user.findFirst({
@@ -23,6 +26,6 @@ const saldoChangesHistoryHandler = async (_: Request, res: Response) => {
   });
 
   return res.status(200).json(saldoChangesHistory);
-}
+};
 
 export default saldoChangesHistoryHandler;

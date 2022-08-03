@@ -9,10 +9,10 @@ const getAllDraftRequests = async (_: Request, res: Response) => {
     },
     include: {
       user: true,
-    }
+    },
   });
 
   return res.status(200).json(allRequest);
-}
+};
 
 export default getAllDraftRequests;

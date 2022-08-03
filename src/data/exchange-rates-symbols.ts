@@ -171,4 +171,3 @@ export const exchangeRatesSymbols = {
 
 export type exchangeRatesSymbolsType =
   keyof typeof exchangeRatesSymbols;
-

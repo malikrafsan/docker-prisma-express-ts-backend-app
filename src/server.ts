@@ -37,7 +37,7 @@ app.use(bodyParser.json());
 app.use(fileUpload());
 
 app.get('/', (_, res) => {
-  res.json('hello there');
+  res.json('Server is running');
 });
 
 app.get('/users', async (_, res) => {

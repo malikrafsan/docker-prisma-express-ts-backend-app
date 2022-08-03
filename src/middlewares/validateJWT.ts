@@ -2,7 +2,11 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { accessTokenSecret } from '../configs';
 
-const validateJWT = (req: Request, res: Response, next: NextFunction) => {
+const validateJWT = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const authHeader = req.headers.authorization;
 
   if (authHeader) {

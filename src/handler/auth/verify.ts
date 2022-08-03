@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../../prisma';
-import { VerificationStatus } from '@prisma/client'
+import { VerificationStatus } from '@prisma/client';
 
 const verifyHandler = async (req: Request, res: Response) => {
   const { username, verified } = req.body;
@@ -28,7 +28,9 @@ const verifyHandler = async (req: Request, res: Response) => {
       username,
     },
     data: {
-      verification_status: verified ? VerificationStatus.VERIFIED : VerificationStatus.REJECTED,
+      verification_status: verified
+        ? VerificationStatus.VERIFIED
+        : VerificationStatus.REJECTED,
     },
   });
 
@@ -36,7 +38,7 @@ const verifyHandler = async (req: Request, res: Response) => {
     return res.status(200).json(updatedUser);
   }
 
-  return res.status(400).json({ message: "Update failed" });
-}
+  return res.status(400).json({ message: 'Update failed' });
+};
 
 export default verifyHandler;

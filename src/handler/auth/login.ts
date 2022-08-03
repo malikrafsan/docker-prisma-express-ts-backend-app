@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import prisma from '../../prisma';
 import bcryptjs from 'bcryptjs';
-import { VerificationStatus } from '@prisma/client'
+import { VerificationStatus } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import { accessTokenSecret } from '../../configs';
 
@@ -20,21 +20,27 @@ const loginHandler = async (req: Request, res: Response) => {
       });
     }
 
-    const validPassword = await bcryptjs.compare(password, user.password);
+    const validPassword = await bcryptjs.compare(
+      password,
+      user.password,
+    );
 
     if (!validPassword) {
-      return res.status(400).json({ message: "Invalid Password" });
+      return res.status(400).json({ message: 'Invalid Password' });
     }
 
     const { username, is_admin } = user;
-    const accessToken = jwt.sign({ username, is_admin }, accessTokenSecret);
+    const accessToken = jwt.sign(
+      { username, is_admin },
+      accessTokenSecret,
+    );
     return res.status(200).json({
       token: accessToken,
       is_admin,
     });
   }
 
-  return res.status(401).json({ message: "User does not exist" });
-}
+  return res.status(401).json({ message: 'User does not exist' });
+};
 
 export default loginHandler;

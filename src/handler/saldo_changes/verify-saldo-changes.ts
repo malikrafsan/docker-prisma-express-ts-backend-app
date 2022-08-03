@@ -1,8 +1,11 @@
 import { Request, Response } from 'express';
 import prisma from '../../prisma';
-import { VerificationStatus } from '@prisma/client'
+import { VerificationStatus } from '@prisma/client';
 
-const modifySaldoChangesHandler = async (req: Request, res: Response) => {
+const modifySaldoChangesHandler = async (
+  req: Request,
+  res: Response,
+) => {
   const { id } = req.params;
   const { verified } = req.body;
   const username = res.locals.user.username;
@@ -36,11 +39,15 @@ const modifySaldoChangesHandler = async (req: Request, res: Response) => {
       id_req_saldo_change: parseInt(id),
     },
     data: {
-      verification_status: verified ? VerificationStatus.VERIFIED : VerificationStatus.REJECTED,
+      verification_status: verified
+        ? VerificationStatus.VERIFIED
+        : VerificationStatus.REJECTED,
     },
   });
 
-  if (updatedRequest.verification_status === VerificationStatus.VERIFIED) {
+  if (
+    updatedRequest.verification_status === VerificationStatus.VERIFIED
+  ) {
     const updatedUser = await prisma.user.update({
       where: {
         id_user: user.id_user,
@@ -59,6 +66,6 @@ const modifySaldoChangesHandler = async (req: Request, res: Response) => {
   return res.status(200).json({
     request: updatedRequest,
   });
-}
+};
 
 export default modifySaldoChangesHandler;

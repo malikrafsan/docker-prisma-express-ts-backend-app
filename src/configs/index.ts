@@ -1,6 +1,3 @@
 const accessTokenSecret = 'youraccesstokensecret';
 
-export {
-  accessTokenSecret,
-}
-
+export { accessTokenSecret };
