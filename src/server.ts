@@ -1,5 +1,4 @@
 import express from 'express';
-import prisma from './prisma';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import fileUpload from 'express-fileupload';

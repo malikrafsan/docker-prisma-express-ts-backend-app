@@ -6,7 +6,7 @@ import { exchangeRatesSymbolsType } from '../../data';
 class ExchangeRateSrv {
   private readonly API_URL =
     'https://api.apilayer.com/exchangerates_data';
-  private readonly API_KEY = 'V2TwWVS4CIIpoG1cfs6WKr9nwzhSIysy';
+  private readonly API_KEY = '0aLK13jw0zp0hjE0wZ9rJSzvxDKpcIzA';
 
   // 1 month in ms
   // private readonly DEFAULT_CACHE_TIME = 1000 * 60 * 60 * 24 * 30;
@@ -15,9 +15,10 @@ class ExchangeRateSrv {
   constructor() {}
 
   async convert(from: exchangeRatesSymbolsType, amount: number) {
-    if (this.getCache(from)) {
-      console.log('HIT CACHE');
-      const result = this.getCache(from) * amount;
+    const cache = this.getCache(from);
+    if (cache) {
+      console.log('HIT CACHE', cache);
+      const result = Math.floor(cache * amount);
 
       return {
         data: {
@@ -31,21 +32,22 @@ class ExchangeRateSrv {
 
     const url = `${this.API_URL}/convert?to=${this.DEFAULT_TO_CURRENCY}&from=${from}&amount=${amount}`;
 
-    try {
-      const res = await axios.get(url, {
-        headers: {
-          apikey: this.API_KEY,
-        },
-        responseType: 'text',
-      });
+    const res = await axios.get(url, {
+      headers: {
+        apikey: this.API_KEY,
+      },
+      responseType: 'text',
+    });
 
-      const data = res.data;
-      this.putCache(from, data.info.rate);
+    const data = res.data;
+    this.putCache(from, data.info.rate);
 
-      return { data: res.data, err: null };
-    } catch (err) {
-      return { data: null, err };
-    }
+    return {
+      data: {
+        result: Math.floor(data.result),
+      },
+      err: null,
+    };
   }
 
   private putCache(key: any, value: unknown) {

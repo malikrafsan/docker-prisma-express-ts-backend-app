@@ -1,5 +1,4 @@
 import {
-  Prisma,
   PrismaClient,
   VerificationStatus,
 } from '@prisma/client';
@@ -8,13 +7,11 @@ const prisma = new PrismaClient();
 import { hasher } from '../src/utils';
 import {
   exchangeRatesSymbols,
-  exchangeRatesSymbolsType,
 } from '../src/data';
-import { exchangeRateSrv } from '../src/services';
 
-const SIZE_GENERATED_USERS = 20;
-const MAX_SIZE_GENERATED_TRANSFER_PER_USER = 100;
-const MAX_SIZE_GENERATED_SALDO_CHANGES_PER_USER = 100;
+const SIZE_GENERATED_USERS = 10;
+const MAX_SIZE_GENERATED_TRANSFER_PER_USER = 50;
+const MAX_SIZE_GENERATED_SALDO_CHANGES_PER_USER = 50;
 
 const adminData = [
   {
@@ -23,20 +20,10 @@ const adminData = [
     password: 'ini-password',
     fotoKTP: '',
     linkKTP:
-      'https://firebasestorage.googleapis.com/v0/b/labpro-selection.appspot.com/o/files%2FMalik%20Akbar%20Hashemi%20Rafsanjani-0.08724032585486197?alt=media&token=dafa4095-b718-4aa4-9f78-2bc0613bcee8',
+      'https://firebasestorage.googleapis.com/v0/b/labpro-selection.appspot.com/o/files%2FGuesthouse-vila-dago-cisitu-djuanda-tubagus-ismail-cimbuluit-sangkuriang-resort-asri-cigadung-cikutr-Bandung-Indonesia.jpg?alt=media&token=96d0a604-3a34-40fa-8a51-91c6c9f24eae',
     is_admin: true,
     verification_status: VerificationStatus.VERIFIED,
-  },
-  {
-    name: 'Hashemi',
-    username: 'crossline',
-    password: 'cross-password',
-    fotoKTP: '',
-    linkKTP:
-      'https://firebasestorage.googleapis.com/v0/b/labpro-selection.appspot.com/o/files%2FMalik%20Akbar%20Hashemi%20Rafsanjani-0.08724032585486197?alt=media&token=dafa4095-b718-4aa4-9f78-2bc0613bcee8',
-    is_admin: true,
-    verification_status: VerificationStatus.VERIFIED,
-  },
+  }
 ];
 
 const randomVerificationStatus = (bound1: number, bound2: number) => {
@@ -66,7 +53,7 @@ const userData = Array(SIZE_GENERATED_USERS)
       password: 'password',
       fotoKTP: '-',
       linkKTP:
-        'https://firebasestorage.googleapis.com/v0/b/labpro-selection.appspot.com/o/files%2FMalik%20Akbar%20Hashemi%20Rafsanjani-0.08724032585486197?alt=media&token=dafa4095-b718-4aa4-9f78-2bc0613bcee8',
+        'https://firebasestorage.googleapis.com/v0/b/labpro-selection.appspot.com/o/files%2FGuesthouse-vila-dago-cisitu-djuanda-tubagus-ismail-cimbuluit-sangkuriang-resort-asri-cigadung-cikutr-Bandung-Indonesia.jpg?alt=media&token=96d0a604-3a34-40fa-8a51-91c6c9f24eae',
       is_admin: false,
       verification_status,
       saldo,
@@ -84,7 +71,7 @@ const randomize = (arr: number[], except: number): number => {
 const main = async () => {
   console.log('start seeding');
   const data = [...adminData, ...userData];
-  const currencies = Object.keys(exchangeRatesSymbols).slice(0, 3);
+  const currencies = Object.keys(exchangeRatesSymbols);
 
   const createdUser = await Promise.all(
     data.map(async (_user) => {
@@ -126,11 +113,8 @@ const main = async () => {
                 Math.floor(Math.random() * currencies.length)
               ];
 
-            const exchangeRes = await exchangeRateSrv.convert(
-              currency as exchangeRatesSymbolsType,
-              amount,
-            );
-            const convertedAmount: number = exchangeRes.data.result;
+            // to reduce api hit
+            const convertedAmount: number = amount;
 
             const reqSaldoChange = await prisma.reqSaldoChange.create(
               {
@@ -208,11 +192,8 @@ const main = async () => {
         const currency =
           currencies[Math.floor(Math.random() * currencies.length)];
 
-        const exchangeRes = await exchangeRateSrv.convert(
-          currency as exchangeRatesSymbolsType,
-          amount,
-        );
-        const convertedAmount: number = exchangeRes.data.result;
+        // to reduce api hit
+        const convertedAmount: number = amount;
 
         const id_user_dest = randomize(idUsersVerified, user.id_user);
         const userDest = await prisma.user.findFirst({
